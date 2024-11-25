@@ -29,7 +29,8 @@ class NewItem extends StatelessWidget {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      decoration: const InputDecoration(label: Text('Quantity')),
+                      decoration:
+                          const InputDecoration(label: Text('Quantity')),
                       initialValue: '1',
                     ),
                   ),
@@ -57,6 +58,20 @@ class NewItem extends StatelessWidget {
                       ],
                       onChanged: (value) {},
                     ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {},
+                    child: const Text('Reset'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: const Text('Add Item'),
                   ),
                 ],
               ),
