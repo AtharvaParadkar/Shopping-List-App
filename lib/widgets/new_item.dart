@@ -1,3 +1,5 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'package:flutter/material.dart';
 import 'package:shopping_list_app/data/categories.dart';
 
@@ -6,6 +8,12 @@ class NewItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _formKey = GlobalKey<FormState>();
+
+    void _saveItem() {
+      _formKey.currentState!.validate();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add New Item'),
@@ -13,6 +21,7 @@ class NewItem extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(12),
         child: Form(
+          key: _formKey,
           child: Column(
             children: [
               TextFormField(
@@ -38,6 +47,7 @@ class NewItem extends StatelessWidget {
                       decoration:
                           const InputDecoration(label: Text('Quantity')),
                       initialValue: '1',
+                      keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty ||
@@ -81,11 +91,13 @@ class NewItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      _formKey.currentState!.reset();
+                    },
                     child: const Text('Reset'),
                   ),
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: _saveItem,
                     child: const Text('Add Item'),
                   ),
                 ],
