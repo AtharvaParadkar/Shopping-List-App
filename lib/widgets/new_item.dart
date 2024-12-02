@@ -2,16 +2,30 @@
 
 import 'package:flutter/material.dart';
 import 'package:shopping_list_app/data/categories.dart';
+import 'package:shopping_list_app/models/category.dart';
 
-class NewItem extends StatelessWidget {
+class NewItem extends StatefulWidget {
   const NewItem({super.key});
 
   @override
+  State<NewItem> createState() => _NewItemState();
+}
+
+class _NewItemState extends State<NewItem> {
+  @override
   Widget build(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
+    var _enteredName = '';
+    var _enteredQuantity = 1;
+    var _selectedCategory = categories[Categories.meat]!;
 
     void _saveItem() {
-      _formKey.currentState!.validate();
+      if (_formKey.currentState!.validate()) {
+        _formKey.currentState!.save();
+        debugPrint(_enteredName);
+        debugPrint(_enteredQuantity.toString());
+        debugPrint(_selectedCategory.title);
+      }
     }
 
     return Scaffold(
@@ -38,6 +52,9 @@ class NewItem extends StatelessWidget {
                   }
                   return null;
                 },
+                onSaved: (value) {
+                  _enteredName = value!;
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -46,7 +63,7 @@ class NewItem extends StatelessWidget {
                     child: TextFormField(
                       decoration:
                           const InputDecoration(label: Text('Quantity')),
-                      initialValue: '1',
+                      initialValue: _enteredQuantity.toString(),
                       keyboardType: TextInputType.number,
                       validator: (value) {
                         if (value == null ||
@@ -57,11 +74,15 @@ class NewItem extends StatelessWidget {
                         }
                         return null;
                       },
+                      onSaved: (value) {
+                        _enteredQuantity = int.parse(value!);
+                      },
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: DropdownButtonFormField(
+                      value: _selectedCategory,
                       items: [
                         //~ 'categories' is a map which cannot be used in a list
                         //~ So we convert it to list using special entries property that is available on all dart maps
@@ -81,7 +102,11 @@ class NewItem extends StatelessWidget {
                             ),
                           ),
                       ],
-                      onChanged: (value) {},
+                      onChanged: (value) {
+                        // setState(() {
+                          _selectedCategory = value!;
+                        // });
+                      },
                     ),
                   ),
                 ],
