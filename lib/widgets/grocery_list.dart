@@ -77,10 +77,27 @@ class _GroceryListState extends State<GroceryList> {
     });
   }
 
-  void _removeItem(GroceryItem removedItem) {
+  void _removeItem(GroceryItem removedItem) async {
+    final index = _groceryItems.indexOf(removedItem);
+
     setState(() {
       _groceryItems.remove(removedItem);
     });
+
+    final url = Uri.https(
+      'shopping-list-app-ee5cb-default-rtdb.firebaseio.com',
+      'shopping-list/${removedItem.id}.json',
+    );
+
+    final response = await http.delete(url);
+
+    debugPrint('Delete code ${response.statusCode}');
+
+    if (response.statusCode >= 400) {
+      setState(() {
+        _groceryItems.insert(index, removedItem);
+      });
+    }
   }
 
   @override
@@ -90,6 +107,10 @@ class _GroceryListState extends State<GroceryList> {
           ? const CircularProgressIndicator()
           : const Text('No Items to Show!'),
     );
+
+    // if (_isLoading) {
+    //   content = const Center(child: CircularProgressIndicator());
+    // }
 
     if (_groceryItems.isNotEmpty) {
       content = ListView.builder(
