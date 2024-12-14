@@ -54,6 +54,14 @@ class _GroceryListState extends State<GroceryList> {
 
     debugPrint(response.body);
 
+    //? when response.body is null the firebase returns the string 'null' and some backends return '' and some others may return status code 
+    if(response.body=='null'){
+      setState(() {
+        _isLoading=false;
+      });
+      return;
+    }
+
     final Map<String, dynamic> data = json.decode(response.body);
 
     final List<GroceryItem> loadedItems = [];
