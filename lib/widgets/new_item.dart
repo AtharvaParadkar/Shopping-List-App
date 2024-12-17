@@ -24,39 +24,43 @@ class _NewItemState extends State<NewItem> {
     var _selectedCategory = categories[Categories.meat]!;
 
     void _saveItem() async {
-      if (_formKey.currentState!.validate()) {
-        _formKey.currentState!.save();
-        final url = Uri.https(
-          'shopping-list-app-ee5cb-default-rtdb.firebaseio.com',
-          'shopping-list.json',
-        );
-        final response = await http.post(
-          url,
-          headers: {'Content-Type': 'application/json'},
-          body: json.encode(
-            {
-              'name': _enteredName,
-              'quantity': _enteredQuantity,
-              'category': _selectedCategory.title,
-            },
-          ),
-        );
+      try {
+        if (_formKey.currentState!.validate()) {
+          _formKey.currentState!.save();
+          final url = Uri.https(
+            'shopping-list-app-ee5cb-default-rtdb.firebaseio.com',
+            'shopping-list.json',
+          );
+          final response = await http.post(
+            url,
+            headers: {'Content-Type': 'application/json'},
+            body: json.encode(
+              {
+                'name': _enteredName,
+                'quantity': _enteredQuantity,
+                'category': _selectedCategory.title,
+              },
+            ),
+          );
 
-        debugPrint('${response.body} ${response.statusCode}');
-        final Map<String, dynamic> resData = json.decode(response.body);
+          debugPrint('${response.body} ${response.statusCode}');
+          final Map<String, dynamic> resData = json.decode(response.body);
 
-        if (!context.mounted) {
-          return;
+          if (!context.mounted) {
+            return;
+          }
+
+          Navigator.of(context).pop(
+            GroceryItem(
+              id: resData['name'],
+              name: _enteredName,
+              quantity: _enteredQuantity,
+              category: _selectedCategory,
+            ),
+          );
         }
-        
-        Navigator.of(context).pop(
-          GroceryItem(
-            id: resData['name'],
-            name: _enteredName,
-            quantity: _enteredQuantity,
-            category: _selectedCategory,
-          ),
-        );
+      } catch (e) {
+        debugPrint('$e');
       }
     }
 
